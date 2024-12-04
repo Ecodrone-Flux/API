@@ -19,17 +19,10 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    console.log('Request Origin:', origin);
-    if (!origin) return callback(null, true); // Permitir herramientas como Postman
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error(`CORS not allowed for origin: ${origin}`));
-    }
-  },
+  origin: '*',  // Esto permite solicitudes de cualquier origen
   credentials: true
 }));
+
 
 app.use(bodyParser.json());
 
