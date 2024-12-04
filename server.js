@@ -48,9 +48,6 @@ app.get('/', (req, res) => {
   res.send('Hola desde el servidor!');
 });
 
-// Configuración para servir archivos estáticos desde el build de React
-app.use(express.static(path.join(__dirname, 'build')));
-
 // Ruta para registrar un usuario
 app.post('/users', async (req, res) => {
   const { name, email, password, phoneNumber, latitude, longitude, lastname, address } = req.body;
