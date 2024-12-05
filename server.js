@@ -300,7 +300,7 @@ app.get('/alert/:id', async (req, res) => {
   try {
     const query = `
       SELECT 
-        alerttype, latitude, longitude, status, userid, 
+        alerttype, date, latitude, longitude, status, userid, 
         description, droneid, address, images 
       FROM alert 
       WHERE id = $1;
