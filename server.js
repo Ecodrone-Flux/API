@@ -295,24 +295,6 @@ app.put('/drones/:droneId', async (req, res) => {
 });
 
 //Movil
-app.get('/alert', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM "alert"');
-
-    // La columna "images" es un TEXT que almacena la URL directamente
-    const alerts = result.rows.map(alert => ({
-      ...alert,
-      images: alert.images || null // No es necesario convertir a base64
-    }));
-
-    res.json(alerts);
-  } catch (error) {
-    console.error('Error fetching alerts:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
 app.post('/alert', async (req, res) => {
   const {
     alerttype,
@@ -346,7 +328,7 @@ app.post('/alert', async (req, res) => {
       images // Guardar la URL de la imagen
     ];
 
-    const result = await pool.query(query, values);
+    const result = await client.query(query, values);
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Error inserting alert:', error.message);
