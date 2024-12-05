@@ -294,6 +294,66 @@ app.put('/drones/:droneId', async (req, res) => {
   }
 });
 
+//Movil
+app.get('/alert', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM "alert"');
+
+    // La columna "images" es un TEXT que almacena la URL directamente
+    const alerts = result.rows.map(alert => ({
+      ...alert,
+      images: alert.images || null // No es necesario convertir a base64
+    }));
+
+    res.json(alerts);
+  } catch (error) {
+    console.error('Error fetching alerts:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.post('/alert', async (req, res) => {
+  const {
+    alerttype,
+    latitude,
+    longitude,
+    status,
+    userid,
+    description,
+    droneid,
+    address,
+    images // Ahora es una URL de la imagen
+  } = req.body;
+
+  try {
+    const query = `
+      INSERT INTO alert 
+      (alerttype, latitude, longitude, status, userid, description, droneid, address, images)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING *;
+    `;
+
+    const values = [
+      alerttype,
+      latitude,
+      longitude,
+      status,
+      userid,
+      description,
+      droneid,
+      address,
+      images // Guardar la URL de la imagen
+    ];
+
+    const result = await pool.query(query, values);
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error inserting alert:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Iniciar servidor
 app.listen(port, '0.0.0.0', () => {
   console.log(`Servidor backend corriendo en http://0.0.0.0:${port}`);
